@@ -29,6 +29,13 @@ public class User implements UserDetails {
 
     private boolean presence;
 
+    public User(String username, String password, UserRoleEnum role, boolean presence) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.presence = presence;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
