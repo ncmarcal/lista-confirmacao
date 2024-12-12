@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("auth")
+//TODO: testar requisição de login no isnomnia e criar um endpoint para confirmação de presença
 public class AuthenticationController {
 
     @Autowired
@@ -36,7 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO dto) {
+    public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO dto) {
         if (userService.checkUserExists(dto.username())) {
             //TODO: criar uma exceção personalizada
             return ResponseEntity.badRequest().build();
@@ -44,6 +45,6 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
         User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
         userService.saveUser(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
     }
 }

@@ -22,8 +22,9 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->  authorize
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         //TODO: definir quais endpoints apenas o admin poderá acesar
-                        .requestMatchers(HttpMethod.POST, "/?").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

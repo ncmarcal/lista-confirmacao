@@ -5,7 +5,7 @@ CREATE TABLE users (
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role TEXT NOT NULL,
-    presence BIT NOT NULL
+    presence BOOLEAN NOT NULL
 );
 
 SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));

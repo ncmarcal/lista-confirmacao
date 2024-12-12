@@ -14,7 +14,11 @@ public class UserService {
 
     public boolean checkUserExists(String username) {
         UserDetails user = userRepository.findByUsername(username);
-        return user.getUsername().equals(username);
+        if (user != null) {
+           return user.getUsername().equals(username);
+        } else {
+            return false;
+        }
     }
 
     public void saveUser(User user) {
