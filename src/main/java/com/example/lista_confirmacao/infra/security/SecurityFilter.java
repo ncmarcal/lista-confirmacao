@@ -1,7 +1,7 @@
 package com.example.lista_confirmacao.infra.security;
 
 import com.example.lista_confirmacao.infra.security.services.TokenService;
-import com.example.lista_confirmacao.repositories.UserRepository;
+import com.example.lista_confirmacao.repositories.UserDetailsRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +22,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    UserRepository userRepository;
+    UserDetailsRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToke(request);
+        String token = this.recoverToken(request);
         if (token != null) {
             String subject = tokenService.validateToken(token);
             UserDetails user = userRepository.findByUsername(subject);
@@ -37,9 +37,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String recoverToke(HttpServletRequest request) {
+    private String recoverToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        //TODO: melhorar esse retorno
         if (authHeader == null) return null;
         return authHeader.replace("Bearer ", "");
     }

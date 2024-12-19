@@ -1,6 +1,6 @@
 package com.example.lista_confirmacao.services;
 
-import com.example.lista_confirmacao.repositories.UserRepository;
+import com.example.lista_confirmacao.repositories.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 public class AuthorizationService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    UserDetailsRepository userDetailsRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return userDetailsRepository.findByUsername(username);
     }
 }

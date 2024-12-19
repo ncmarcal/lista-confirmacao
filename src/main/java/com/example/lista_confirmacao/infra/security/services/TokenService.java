@@ -5,6 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.lista_confirmacao.domain.user.User;
+import com.example.lista_confirmacao.exceptions.SystemErrors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenService.class);
 
     @Value("${api.security.token.secret}")
     private String secret;
@@ -27,8 +31,8 @@ public class TokenService {
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
-            //TODO: criar exceção personalizada na classe de exceções
-            throw new RuntimeException("Erro ao gerar token", e);
+            LOGGER.error(e.getMessage(), e);
+            throw new SystemErrors.ErrorTokenGeneration(e);
         }
     }
 
@@ -41,6 +45,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException e) {
+            LOGGER.error(e.getMessage(), e);
             //retornando vazio, pois a classe do spring security lidará com a exceção de não autorizado
             return "";
         }
