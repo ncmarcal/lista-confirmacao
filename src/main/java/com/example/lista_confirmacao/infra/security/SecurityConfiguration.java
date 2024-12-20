@@ -1,5 +1,6 @@
 package com.example.lista_confirmacao.infra.security;
 
+import com.example.lista_confirmacao.exceptions.handlers.CustomExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exce -> exce.authenticationEntryPoint(new CustomExceptionHandler()))
                 .build();
 
     }

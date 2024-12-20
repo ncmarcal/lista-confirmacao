@@ -1,13 +1,19 @@
-package com.example.lista_confirmacao.exceptions;
+package com.example.lista_confirmacao.exceptions.handlers;
 
+import com.example.lista_confirmacao.exceptions.SystemErrors;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+
 @ControllerAdvice
-public class CustomExceptionHandler {
+public class CustomExceptionHandler implements AuthenticationEntryPoint {
 
     @ExceptionHandler(SystemErrors.ErrorUserAlreadyExists.class)
     public ResponseEntity<String> handleErrorUserAlreadyExists(SystemErrors.ErrorUserAlreadyExists ex) {
@@ -29,10 +35,11 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>("Ocorreu um erro: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    //TODO: fazer com que essa mensagem seja lançada nos 403 que existir
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
-        return new ResponseEntity<>("Acesso negado: você não tem permissão para acessar este recurso.", HttpStatus.FORBIDDEN);
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("text/plain; charset=UTF-8");
+        response.getWriter().write("Acesso negado! Você não tem permissão necessária para realizar esta ação.");
     }
 }
 
