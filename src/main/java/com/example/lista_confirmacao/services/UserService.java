@@ -2,7 +2,6 @@ package com.example.lista_confirmacao.services;
 
 import com.example.lista_confirmacao.domain.user.User;
 import com.example.lista_confirmacao.exceptions.SystemErrors;
-import com.example.lista_confirmacao.infra.security.services.TokenService;
 import com.example.lista_confirmacao.repositories.UserDetailsRepository;
 import com.example.lista_confirmacao.repositories.UserRepository;
 import jakarta.transaction.Transactional;
