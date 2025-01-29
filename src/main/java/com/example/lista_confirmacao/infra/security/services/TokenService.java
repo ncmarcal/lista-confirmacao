@@ -9,6 +9,7 @@ import com.example.lista_confirmacao.exceptions.SystemErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -22,12 +23,18 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generateToken(User user) {
+    public String generateToken(UserDetails userDetails) {
+        String claims = userDetails.getAuthorities().iterator().next().getAuthority();
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    public String createToken(String claims, String username) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
+                    .withClaim("role", claims)
                     .withIssuer("lista-confirmacao")
-                    .withSubject(user.getUsername())
+                    .withSubject(username)
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
