@@ -23,5 +23,12 @@ public class SystemErrors {
         }
     }
 
+    public static final class ErrorForbiddenConsultUsers extends RuntimeException {
+        public static final String MSG_ERROR = "Você não tem permissão para consultar a lista de usuários.";
+        public ErrorForbiddenConsultUsers() {
+            super(MSG_ERROR);
+        }
+    }
+
 }
 

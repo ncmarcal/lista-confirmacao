@@ -3,8 +3,6 @@ package com.example.lista_confirmacao.constrollers;
 import com.example.lista_confirmacao.domain.user.User;
 import com.example.lista_confirmacao.domain.user.dto.AuthenticatonDTO;
 import com.example.lista_confirmacao.domain.user.dto.LoginResponseDTO;
-import com.example.lista_confirmacao.domain.user.dto.RegisterDTO;
-import com.example.lista_confirmacao.exceptions.SystemErrors;
 import com.example.lista_confirmacao.infra.security.services.TokenService;
 import com.example.lista_confirmacao.services.UserService;
 import jakarta.validation.Valid;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,17 +39,5 @@ public class AuthenticationController {
         Authentication auth = this.authenticationManager.authenticate(userNamePassword);
         String token = tokenService.generateToken((User) auth.getPrincipal());
         return ResponseEntity.ok(new LoginResponseDTO(token));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO dto) {
-        if (userService.checkUserExists(dto.username())) {
-            LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
-            throw new SystemErrors.ErrorUserAlreadyExists();
-        }
-        String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
-        User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
-        userService.saveUserDetails(user);
-        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
     }
 }

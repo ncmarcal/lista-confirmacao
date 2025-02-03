@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,20 +19,6 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    public boolean checkUserExists(String username) {
-        UserDetails user = userDetailsRepository.findByUsername(username);
-        if (user != null) {
-           return user.getUsername().equals(username);
-        } else {
-            return false;
-        }
-    }
-
-    @Transactional
-    public void saveUserDetails(User user) {
-        userDetailsRepository.save(user);
-    }
 
     @Transactional
     public void confirmUserPresence(String username) {
