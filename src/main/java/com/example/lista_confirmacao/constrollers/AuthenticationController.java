@@ -4,10 +4,7 @@ import com.example.lista_confirmacao.domain.user.User;
 import com.example.lista_confirmacao.domain.user.dto.AuthenticatonDTO;
 import com.example.lista_confirmacao.domain.user.dto.LoginResponseDTO;
 import com.example.lista_confirmacao.infra.security.services.TokenService;
-import com.example.lista_confirmacao.services.UserService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,14 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
-
     @Autowired
     AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     TokenService tokenService;
