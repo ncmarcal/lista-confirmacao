@@ -3,10 +3,12 @@ package com.example.lista_confirmacao.constrollers;
 import com.example.lista_confirmacao.domain.user.User;
 import com.example.lista_confirmacao.domain.user.dto.AllUsersDTO;
 import com.example.lista_confirmacao.domain.user.dto.RegisterDTO;
+import com.example.lista_confirmacao.domain.user.dto.ResponseDTO;
 import com.example.lista_confirmacao.exceptions.SystemErrors;
 import com.example.lista_confirmacao.services.AdminService;
 import com.example.lista_confirmacao.services.UserService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class AdminController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO dto) {
+    public ResponseEntity<ResponseDTO> register(@RequestBody @Valid RegisterDTO dto) {
         if (adminService.checkUserExists(dto.username())) {
             LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
             throw new SystemErrors.ErrorUserAlreadyExists();
@@ -40,7 +42,7 @@ public class AdminController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
         User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
         adminService.saveUserDetails(user);
-        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+        return ResponseEntity.ok(new ResponseDTO("Usuário cadastrado com sucesso!"));
     }
 
 
