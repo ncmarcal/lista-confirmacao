@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,11 @@ public class AdminService {
         } else {
             return false;
         }
+    }
+
+    public boolean checkUserExists(Integer id) {
+        Optional<User> user = userDetailsRepository.findById(id);
+        return user.isPresent();
     }
 
     @Transactional

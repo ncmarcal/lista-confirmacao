@@ -37,44 +37,38 @@ public class AdminController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@RequestBody @Valid RegisterDTO dto) {
         validateRequisition(dto);
-        if (adminService.checkUserExists(dto.username())) {
-            LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
-            throw new SystemErrors.ErrorUserAlreadyExists();
-        }
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
         User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
         adminService.saveUserDetails(user);
         return ResponseEntity.ok(new ResponseDTO("Usuário cadastrado com sucesso!"));
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDTO> delete(@RequestBody @Valid DeleteDTO dto) {
-        validateRequisition(dto);
-        if (!adminService.checkUserExists(dto.username())) {
-            LOGGER.error(SystemErrors.ErroUserNotExists.MSG_ERROR);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> delete(@PathVariable @Valid Integer id) {
+        validateRequisition(id);
+        adminService.deleteUserById(id);
+        return ResponseEntity.ok(new ResponseDTO("Usuário removido com sucesso!"));
+    }
+
+    private void validateRequisition(Integer id) {
+        if (id<=0) {
+            throw new SystemErrors.ErroIdInvalido();
+        }
+        if (!adminService.checkUserExists(id)) {
             throw new SystemErrors.ErroUserNotExists();
         }
-        adminService.deleteUserById(dto.id());
-        return ResponseEntity.ok(new ResponseDTO("Usuário removido com sucesso!"));
     }
 
     private void validateRequisition(RegisterDTO dto) {
         if (dto.username().isEmpty()) {
             throw new SystemErrors.ErroUserNameInvalid();
         }
-
         if (dto.password().isEmpty()) {
             throw new SystemErrors.ErroPasswordInvalid();
         }
-    }
-
-    private void validateRequisition(DeleteDTO dto) {
-        if (dto.username().isEmpty()) {
-            throw new SystemErrors.ErroUserNameInvalid();
-        }
-
-        if (dto.id() <= 0) {
-            throw new SystemErrors.ErroIdInvalido();
+        if (adminService.checkUserExists(dto.username())) {
+            LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
+            throw new SystemErrors.ErrorUserAlreadyExists();
         }
     }
 
