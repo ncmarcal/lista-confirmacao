@@ -2,6 +2,7 @@ package com.example.lista_confirmacao.constrollers;
 
 import com.example.lista_confirmacao.domain.user.User;
 import com.example.lista_confirmacao.domain.user.dto.AllUsersDTO;
+import com.example.lista_confirmacao.domain.user.dto.DeleteDTO;
 import com.example.lista_confirmacao.domain.user.dto.RegisterDTO;
 import com.example.lista_confirmacao.domain.user.dto.ResponseDTO;
 import com.example.lista_confirmacao.exceptions.SystemErrors;
@@ -35,18 +36,29 @@ public class AdminController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@RequestBody @Valid RegisterDTO dto) {
+        validateRequisition(dto);
         if (adminService.checkUserExists(dto.username())) {
             LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
             throw new SystemErrors.ErrorUserAlreadyExists();
         }
-        validateRequisitionRegister(dto);
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
         User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
         adminService.saveUserDetails(user);
         return ResponseEntity.ok(new ResponseDTO("Usuário cadastrado com sucesso!"));
     }
 
-    private void validateRequisitionRegister(RegisterDTO dto) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> delete(@RequestBody @Valid DeleteDTO dto) {
+        validateRequisition(dto);
+        if (!adminService.checkUserExists(dto.username())) {
+            LOGGER.error(SystemErrors.ErroUserNotExists.MSG_ERROR);
+            throw new SystemErrors.ErroUserNotExists();
+        }
+        adminService.deleteUserById(dto.id());
+        return ResponseEntity.ok(new ResponseDTO("Usuário removido com sucesso!"));
+    }
+
+    private void validateRequisition(RegisterDTO dto) {
         if (dto.username().isEmpty()) {
             throw new SystemErrors.ErroUserNameInvalid();
         }
@@ -55,5 +67,16 @@ public class AdminController {
             throw new SystemErrors.ErroPasswordInvalid();
         }
     }
+
+    private void validateRequisition(DeleteDTO dto) {
+        if (dto.username().isEmpty()) {
+            throw new SystemErrors.ErroUserNameInvalid();
+        }
+
+        if (dto.id() <= 0) {
+            throw new SystemErrors.ErroIdInvalido();
+        }
+    }
+
 
 }

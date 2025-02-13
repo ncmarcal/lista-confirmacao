@@ -44,5 +44,19 @@ public class SystemErrors {
         }
     }
 
+    public static final class ErroUserNotExists extends RuntimeException {
+        public static final String MSG_ERROR = "Usuário inexistente!";
+        public ErroUserNotExists() {
+            super(MSG_ERROR);
+        }
+    }
+
+    public static final class ErroIdInvalido extends RuntimeException {
+        public static final String MSG_ERROR = "ID de usuário inválido!";
+        public ErroIdInvalido() {
+            super(MSG_ERROR);
+        }
+    }
+
 }
 
