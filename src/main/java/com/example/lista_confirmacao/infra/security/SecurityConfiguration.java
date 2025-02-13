@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/admin/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/presence-confirmation").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/admin/list-all-users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/admin/delete").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
