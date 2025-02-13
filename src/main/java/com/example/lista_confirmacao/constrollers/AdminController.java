@@ -39,11 +39,21 @@ public class AdminController {
             LOGGER.error(SystemErrors.ErrorUserAlreadyExists.MSG_ERROR);
             throw new SystemErrors.ErrorUserAlreadyExists();
         }
+        validateRequisitionRegister(dto);
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
         User user = new User(dto.username(), encryptedPassword, dto.role(), dto.presence());
         adminService.saveUserDetails(user);
         return ResponseEntity.ok(new ResponseDTO("Usuário cadastrado com sucesso!"));
     }
 
+    private void validateRequisitionRegister(RegisterDTO dto) {
+        if (dto.username().isEmpty()) {
+            throw new SystemErrors.ErroUserNameInvalid();
+        }
+
+        if (dto.password().isEmpty()) {
+            throw new SystemErrors.ErroPasswordInvalid();
+        }
+    }
 
 }

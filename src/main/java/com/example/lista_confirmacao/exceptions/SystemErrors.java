@@ -30,5 +30,19 @@ public class SystemErrors {
         }
     }
 
+    public static final class ErroUserNameInvalid extends RuntimeException {
+        public static final String MSG_ERROR = "Nome de usuário inválido!";
+        public ErroUserNameInvalid() {
+            super(MSG_ERROR);
+        }
+    }
+
+    public static final class ErroPasswordInvalid extends RuntimeException {
+        public static final String MSG_ERROR = "Senha inválida!";
+        public ErroPasswordInvalid() {
+            super(MSG_ERROR);
+        }
+    }
+
 }
 
