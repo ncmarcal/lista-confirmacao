@@ -1,6 +1,7 @@
 package com.example.lista_confirmacao.services;
 
 import com.example.lista_confirmacao.domain.user.User;
+import com.example.lista_confirmacao.domain.user.dto.ConfirmVerificationDTO;
 import com.example.lista_confirmacao.exceptions.SystemErrors;
 import com.example.lista_confirmacao.repositories.UserDetailsRepository;
 import com.example.lista_confirmacao.repositories.UserRepository;
@@ -23,12 +24,17 @@ public class UserService {
     @Transactional
     public void confirmUserPresence(String username) {
         User userExisting = userRepository.findByUsername(username);
-        if (userExisting.isPresence()) {
+        if (confirmVerification(userExisting.getUsername()).presence()) {
             LOGGER.error(SystemErrors.ErrorPresenceAlreadyConfirm.MSG_ERROR);
             throw new SystemErrors.ErrorPresenceAlreadyConfirm();
         } else {
             userExisting.setPresence(true);
             userRepository.save(userExisting);
         }
+    }
+
+    public ConfirmVerificationDTO confirmVerification(String username) {
+        User userExisting = userRepository.findByUsername(username);
+        return new ConfirmVerificationDTO(userExisting.isPresence());
     }
 }
