@@ -27,4 +27,10 @@ public class UserController {
         ConfirmVerificationDTO confirmVerification = userService.confirmVerification(dto.username());
         return ResponseEntity.ok(confirmVerification);
     }
+
+    @PostMapping("/presence-disconfirm")
+    public ResponseEntity<ResponseDTO> presenceDisconfirm(@RequestBody @Valid ConfirmationDTO dto) {
+        userService.disconfirmPresence(dto.username());
+        return ResponseEntity.ok(new ResponseDTO("Presença desconfirmada!"));
+    }
 }

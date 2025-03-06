@@ -33,6 +33,18 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public void disconfirmPresence(String username) {
+        User userExisting = userRepository.findByUsername(username);
+        if (!confirmVerification(userExisting.getUsername()).presence()) {
+            LOGGER.error(SystemErrors.ErrorPresencNotYetConfirm.MSG_ERROR);
+            throw new SystemErrors.ErrorPresencNotYetConfirm();
+        } else {
+            userExisting.setPresence(false);
+            userRepository.save(userExisting);
+        }
+    }
+
     public ConfirmVerificationDTO confirmVerification(String username) {
         User userExisting = userRepository.findByUsername(username);
         return new ConfirmVerificationDTO(userExisting.isPresence());

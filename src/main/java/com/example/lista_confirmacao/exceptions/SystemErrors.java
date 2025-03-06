@@ -58,5 +58,12 @@ public class SystemErrors {
         }
     }
 
+    public static final class ErrorPresencNotYetConfirm extends RuntimeException {
+        public static final String MSG_ERROR = "Sua presença ainda não foi confirmada!";
+        public ErrorPresencNotYetConfirm() {
+            super(MSG_ERROR);
+        }
+    }
+
 }
 
